@@ -41,11 +41,21 @@ int onebyte_release(struct inode *inode, struct file *filep)
 ssize_t onebyte_read(struct file *filep, char *buf, size_t count, loff_t *f_pos)
 {
     /*please complete the function on your own*/
+    if (*f_pos) return 0; // exceeded 1 byte, read nothing
+    // else
+    buf[0] = *onebyte_data;
+    ++*f_pos; // advance
+    return 1; // 1 byte read
 }
 
 ssize_t onebyte_write(struct file *filep, const char *buf, size_t count, loff_t *f_pos)
 {
     /*please complete the function on your own*/
+    if (*f_pos) return -ENOSPC; // no space left on device error
+    // else
+    *onebyte_data = buf[0];
+    ++*f_pos; // advance
+    return 1; // 1 byte wrote
 }
 
 static int onebyte_init(void)
